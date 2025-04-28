@@ -3,24 +3,32 @@ const gameBoard = (function () {
     const arrayGrid = [];
     const arrSize = 9;
 
-
     for(let i = 0; i< arrSize; i++){
         arrayGrid.push(cell());
     }
 
     const getBoard = () => arrayGrid;
 
-    function makeMark(mark) {
-       const available = arrayGrid.filter((square) => square.getValue() === 0);
-       
-       if(available){
-        arrayGrid[available.length-1].addMark(mark);
-       }
+    function makeMark(mark,spot) {
+        if(spot>arrSize-1){
+           throw new Error(`Invalid Position Entered.`);
+        }
+        else{
+            const available = arrayGrid[spot].getValue()===0;
+        
+            if(available){
+            arrayGrid[spot].addMark(mark);
+            }
+            else{
+                throw new Error(`Invalid Position.`)
+                return;
+            }
+        }
     }
 
     const printBoard = () => {
         const displayArray = arrayGrid.map((square) => square.getValue());
-        console.log(displayArray);
+        return displayArray;
     }
 
     function cell(){
@@ -54,21 +62,57 @@ const gameControl = (function (){
        activePlayer = activePlayer === players[0] ? players[1]:players[0];
     }
 
-    const makeMove = () =>{
-        gameBoard.makeMark(activePlayer.playerMark);
-        switchPlayer();
+    const makeMove = (spot) =>{
+        gameBoard.makeMark(activePlayer.playerMark,spot);
+        //switchPlayer();
         console.log(`${activePlayer.playerName}'s Turn`);
     }
 
     const getplayers = () => players;
 
-    return {playerCreate,getplayers,makeMove};
+    function score(){
+        const currentBoard = gameBoard.printBoard();
+
+        if(currentBoard[0]===activePlayer.playerMark && currentBoard[1]===activePlayer.playerMark && currentBoard[2]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[3]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[5]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[6]===activePlayer.playerMark && currentBoard[7]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[0]===activePlayer.playerMark && currentBoard[3]===activePlayer.playerMark && currentBoard[6]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[1]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[7]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[2]===activePlayer.playerMark && currentBoard[5]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[0]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(currentBoard[2]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[6]===activePlayer.playerMark){
+            console.log(`${activePlayer.playerName} Wins!`);
+        }
+        else if(!currentBoard.includes(0)){
+            console.log(`Tie`);
+        }
+    }
+
+    return {playerCreate,getplayers,makeMove,score,switchPlayer};
 })();
 
 gameControl.playerCreate(`josh`);
 gameControl.playerCreate(`venus`);
-console.log(gameControl.getplayers());
 
-gameControl.makeMove();
-gameBoard.printBoard();
+gameControl.makeMove(7);
+gameControl.switchPlayer();
+gameControl.makeMove(7);
+
+gameControl.score();
+console.log(gameBoard.printBoard());
+
 
