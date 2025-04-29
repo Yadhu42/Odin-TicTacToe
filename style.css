@@ -1,0 +1,21 @@
+:root{
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: 200px 200px 200px;
+
+}
+
+.gridSquare{
+    height: 200px;
+    border: solid 3px black;
+}
