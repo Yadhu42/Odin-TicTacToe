@@ -7,6 +7,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #EEEEEE;
 }
 
 .container{
@@ -16,6 +17,48 @@ body{
 }
 
 .gridSquare{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 200px;
     border: solid 3px black;
+}
+
+.sq0,.sq3,.sq6{
+    border-left: #EEEEEE;
+}
+
+.sq2,.sq5,.sq8{
+    border-right: #EEEEEE;
+}
+
+.sq0,.sq1,.sq2{
+    border-top: #EEEEEE;
+}
+
+.sq6,.sq7,.sq8{
+    border-bottom: #EEEEEE;
+}
+
+.victory{
+    margin-top: 15px;
+    width: 600px;
+    display: flex;
+    justify-content: center;
+}
+
+.ticMark{
+    fill:black;
+}
+
+.tacMark{
+    stroke:black;
+}
+
+.ticMarkW{
+    fill:#9ABF80;
+}
+
+.tacMarkW{
+    stroke:#9ABF80;
 }
