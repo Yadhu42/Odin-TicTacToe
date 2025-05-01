@@ -1,19 +1,52 @@
 :root{
-    box-sizing: border-box;
+    box-sizing: border-box; 
+    font-family: "Cal Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+header{
+    width: 100%;
+    background-color: #27548A;
+    height: 55px;
+    margin-bottom: 15px;
+}
+
+.logo{
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: #EEEEEE;
+}
+
+header p{
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
 }
 
 body{
+    margin: 0;
+    padding: 0;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: #EEEEEE;
 }
 
 .container{
+    padding: 10px;
     display: grid;
     grid-template-columns: 200px 200px 200px;
+    justify-content: center;
+    align-items: center;
+}
 
+.victory{
+    font-size: 24px;
+}
+
+.victory p{
+    margin: 0;
 }
 
 .gridSquare{
@@ -61,4 +94,12 @@ body{
 
 .tacMarkW{
     stroke:#9ABF80;
+}
+
+.ticMarkL{
+    fill:#D84040;
+}
+
+.tacMarkL{
+    stroke:#D84040;
 }
