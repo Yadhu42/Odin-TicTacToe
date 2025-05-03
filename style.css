@@ -55,6 +55,13 @@ body{
     align-items: center;
     height: 200px;
     border: solid 3px black;
+    transition: ease .3s;
+    cursor: pointer;
+}
+
+.gridSquare:hover{
+    background-color: #d0d0d0;
+    
 }
 
 .sq0,.sq3,.sq6{

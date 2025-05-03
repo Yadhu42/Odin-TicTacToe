@@ -20,7 +20,7 @@ const gameBoard = (function () {
             arrayGrid[spot].addMark(mark);
             }
             else{
-                throw new Error(`Invalid Position.`)
+                throw new Error(`Invalid Position.`);
             }
         }
     }
@@ -42,7 +42,11 @@ const gameBoard = (function () {
         return {getValue, addMark}
     }
 
-    return {getBoard,makeMark,printBoard};
+    const winningCombos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+    const getWinningCombos = () => winningCombos;
+
+    return {getBoard,makeMark,printBoard,getWinningCombos};
 })();
 
 const gameControl = (function (){
@@ -59,12 +63,16 @@ const gameControl = (function (){
 
     const switchPlayer = () =>{
        activePlayer = activePlayer === players[0] ? players[1]:players[0];
+       if(activePlayer.playerName===`CPU`){
+        cpuAi.checkPlayer();
+       }
     }
 
     const makeMove = (spot) =>{
         gameBoard.makeMark(activePlayer.playerMark,spot);
         return activePlayer.playerMark;
     }
+
 
     const getplayers = () => players;
     const getCurrentPlayer = () => activePlayer;
@@ -106,6 +114,53 @@ const gameControl = (function (){
     }
 
     return {playerCreate,getplayers,getCurrentPlayer,makeMove,score};
+})();
+
+const cpuAi = (function(){
+    function powerOn(){
+        gameControl.playerCreate(`CPU`);
+    }
+
+    const opponent = gameControl.getplayers();
+    const winStrat = gameBoard.getWinningCombos();
+    let board = gameBoard.getBoard();
+    let pos = []
+
+    function checkPlayer(){
+        board.forEach((square) =>{
+            if(square.getValue()===opponent[0].playerMark){
+                if(!pos.includes(board.indexOf(square))){
+                    pos.push(board.indexOf(square));
+                }
+            }
+        });
+        console.log(`user pos:`,pos);
+        strat();
+    }
+
+    function strat(){
+        winStrat.forEach((combo) =>{
+            const [a,b,c] = combo;
+            if(pos.includes(a)||pos.includes(b)||pos.includes(c)){
+                if(pos.length>1){
+                    if(pos.includes(a) && pos.includes(b)){
+                        console.log(`second combo`,combo);
+                    }
+                    else if(pos.includes(b) && pos.includes(c)){
+                        console.log(`second combo`,combo);
+                    }
+                    else if(pos.includes(a) && pos.includes(c)){
+                        console.log(`second combo`,combo);
+                    }
+                }
+                else{
+                    console.log(`first combo`,combo);
+                }
+            }
+        })
+    }
+
+    return{powerOn,checkPlayer}
 })();
 
 const displayControl= ( () => {
@@ -218,9 +273,10 @@ const displayControl= ( () => {
     return {displayGrid}
 })();
 
-
-
 gameControl.playerCreate(`Player 1`);
-gameControl.playerCreate(`Player 2`);
+cpuAi.powerOn();
+
+
+console.log(gameControl.getplayers());
 
 displayControl.displayGrid();
