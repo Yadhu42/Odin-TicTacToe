@@ -63,6 +63,7 @@ const gameControl = (function (){
 
     const switchPlayer = () =>{
        activePlayer = activePlayer === players[0] ? players[1]:players[0];
+       
        if(activePlayer.playerName===`CPU`){
         cpuAi.checkPlayer();
        }
@@ -117,6 +118,7 @@ const gameControl = (function (){
 })();
 
 const cpuAi = (function(){
+    let cpuTurn;
     function powerOn(){
         gameControl.playerCreate(`CPU`);
     }
@@ -124,7 +126,7 @@ const cpuAi = (function(){
     const opponent = gameControl.getplayers();
     const winStrat = gameBoard.getWinningCombos();
     let board = gameBoard.getBoard();
-    let pos = []
+    let pos = [];
 
     function checkPlayer(){
         board.forEach((square) =>{
@@ -134,33 +136,65 @@ const cpuAi = (function(){
                 }
             }
         });
-        console.log(`user pos:`,pos);
-        strat();
+        // console.log(`user pos:`,pos);
+        strat(opponent[1].playerMark);
     }
 
-    function strat(){
+    function strat(me){
+        let arr = [];
         winStrat.forEach((combo) =>{
             const [a,b,c] = combo;
             if(pos.includes(a)||pos.includes(b)||pos.includes(c)){
                 if(pos.length>1){
                     if(pos.includes(a) && pos.includes(b)){
-                        console.log(`second combo`,combo);
+                        if(board[c].getValue()!==me){
+                            // console.log(`second combo`,combo);
+                            cpuTake(c);
+                        }
                     }
                     else if(pos.includes(b) && pos.includes(c)){
-                        console.log(`second combo`,combo);
+                        if(board[a].getValue()!==me){
+                            // console.log(`second combo`,combo);
+                            cpuTake(a);
+                        }
                     }
                     else if(pos.includes(a) && pos.includes(c)){
-                        console.log(`second combo`,combo);
+                        if(board[b].getValue()!==me){
+                            // console.log(`second combo`,combo);
+                            cpuTake(b);
+                        }
                     }
                 }
                 else{
-                    console.log(`first combo`,combo);
+                    // console.log(`first combo`,combo);
+                    combo.forEach((val)=>{
+                        if(!pos.includes(val)){
+                            arr.push(val);
+                        }
+                    });
                 }
             }
-        })
+
+        });
+        if(arr.length!==0){
+            optimalValue(arr);
+        }
     }
 
-    return{powerOn,checkPlayer}
+    function optimalValue(args){
+        const rand = Math.floor(Math.random() * args.length);
+        cpuTake(args[rand]);
+    }
+
+    function cpuTake(pos){
+        cpuTurn = pos;
+        console.log(`The cpu wishes to move to`,cpuTurn);
+    }
+
+    const getCpuTurn = () => cpuTurn;
+
+
+    return{powerOn,checkPlayer,getCpuTurn}
 })();
 
 const displayControl= ( () => {
@@ -194,11 +228,13 @@ const displayControl= ( () => {
     }
 
     function winState(event){
+        
 
         if(event.target !== container){
             event.stopPropagation();
 
             let currentMove = gameControl.makeMove(event.target.id);
+
                 if(currentMove===`X`){
                 event.target.innerHTML=`<svg class="tics" id="${event.target.id}" width="150px" height="150px" viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-419.000000, -240.000000)" class="ticMark"> <g id="icons" transform="translate(56.000000, 160.000000)"> 
@@ -270,7 +306,7 @@ const displayControl= ( () => {
         }
     }
 
-    return {displayGrid}
+    return {displayGrid,winState}
 })();
 
 gameControl.playerCreate(`Player 1`);
