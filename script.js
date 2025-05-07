@@ -63,10 +63,6 @@ const gameControl = (function (){
 
     const switchPlayer = () =>{
        activePlayer = activePlayer === players[0] ? players[1]:players[0];
-       
-       if(activePlayer.playerName===`CPU`){
-        cpuAi.checkCpu();
-       }
     }
 
     const makeMove = (spot) =>{
@@ -122,11 +118,13 @@ const cpuAi = (function(){
         gameControl.playerCreate(`CPU`);
     }
 
+
     const opponent = gameControl.getplayers();
     const winCombos = gameBoard.getWinningCombos();
     let board = gameBoard.getBoard();
     let pos = [];
     let cpuPos = [];
+
 
     function checkCpu(){
         board.forEach((square) =>{
@@ -136,12 +134,13 @@ const cpuAi = (function(){
                 }
             }
         });
-        console.log(cpuPos);
+        // console.log(cpuPos);
         cpuStrat();
     }
 
     function cpuStrat(){
-        if(cpuPos.length>1){
+        let found = false;
+        if(cpuPos.length>=2){
             
             winCombos.forEach((combo) =>{
                 const [a,b,c] = combo;
@@ -150,31 +149,38 @@ const cpuAi = (function(){
                     if(board[c].getValue()===0){
                         console.log(`going to pos`,c,combo);
                         cpuTake(c);
+                        found = true;
                     }
-                    console.log(combo);
                 }
                 else if(cpuPos.includes(b) && cpuPos.includes(c)){
                     if(board[a].getValue()===0){
                         console.log(`going to pos`,a,combo);
                         cpuTake(a);
+                        found = true;
                     }
-                    console.log(combo);
                 }
                 else if(cpuPos.includes(a) && cpuPos.includes(c)){
                     if(board[b].getValue()===0){
                         console.log(`going to pos`,b,combo);
                         cpuTake(b);
+                        found = true;
                     }
                 }
             });
-
+            if(found!=true){
+                console.log(`fag`,cpuPos);
+                checkPlayer();
+                found=false;
+            }
         }
         else{
+            // console.log(`i'm the issue`);
             checkPlayer();
         }
     }
     
     function checkPlayer(){
+
         board.forEach((square) =>{
             if(square.getValue()===opponent[0].playerMark){
                 if(!pos.includes(board.indexOf(square))){
@@ -186,48 +192,58 @@ const cpuAi = (function(){
     }
 
     function strat(me){
+        console.log(`entering player function`);
         let arr = [];
+        console.log(`player pos`,pos);
         winCombos.forEach((combo) =>{
             const [a,b,c] = combo;
 
-            if(pos.includes(a)||pos.includes(b)||pos.includes(c)){
-                if(pos.length>1){
-                    if(pos.includes(a) && pos.includes(b)){
-                        if(board[c].getValue()!==me){
-                            cpuTake(c);
-                        }
-                        else{
-                            const alt = winstrat(combo);
-                            cpuTake(alt);
-                        }
+            if(pos.length>1){
+                if(pos.includes(a) && pos.includes(b)){
+                    if(board[c].getValue()!==me){
+                        console.log(`1`)
+                        cpuTake(c);   
                     }
-                    else if(pos.includes(b) && pos.includes(c)){
-                        if(board[a].getValue()!==me){
-                            cpuTake(a);
-                        }
-                        else{
-                            const alt = winstrat(combo);
-                            cpuTake(alt);
-                        }
-                    }
-                    else if(pos.includes(a) && pos.includes(c)){
-                        if(board[b].getValue()!==me){
-                            cpuTake(b);
-                        }
-                        else{
-                            const alt = winstrat(combo);
-                            cpuTake(alt);
-                        }
+                    else if(board[c].getValue()===me){
+                        const alt = winstrat(combo);
+                        console.log(`1.5`)
+                        cpuTake(alt);
+                        return;
                     }
                 }
-                else{
-                    // console.log(`first combo`,combo);
-                    combo.forEach((val)=>{
-                        if(!pos.includes(val)){
-                            arr.push(val);
-                        }
-                    });
+                else if(pos.includes(b) && pos.includes(c)){
+                    if(board[a].getValue()!==me){
+                        console.log(`2`)
+                        cpuTake(a);
+                    }
+                    else{
+                        const alt = winstrat(combo);
+                        console.log(`2.5`)
+                        cpuTake(alt);
+                        return;
+                    }
                 }
+                else if(pos.includes(a) && pos.includes(c)){
+                    if(board[b].getValue()!==me){
+                        console.log(`3`)
+                        cpuTake(b);
+                    }
+                    else{
+                        const alt = winstrat(combo);
+                        console.log(`3.5`);
+                        cpuTake(alt);
+                        return;
+                    }
+                }
+            }
+            else{
+                // console.log(`first combo`,combo);
+                console.log(`4`);
+                combo.forEach((val)=>{
+                    if(!pos.includes(val)){
+                        arr.push(val);
+                    }
+                });
             }
 
         });
@@ -248,7 +264,7 @@ const cpuAi = (function(){
                     }
                 }
                 
-            })
+            });
         });
 
         //console.log(filled);
@@ -280,7 +296,6 @@ const cpuAi = (function(){
     }
 
     const getCpuTurn = () => cpuTurn;
-
 
     return{powerOn,checkPlayer,getCpuTurn,checkCpu}
 })();
@@ -320,14 +335,16 @@ const displayControl= ( () => {
     function cpuClick(){
         const active = gameControl.getCurrentPlayer();
         if(active.playerName===`CPU`){
+
+            cpuAi.checkCpu();
             const move = cpuAi.getCpuTurn();
+            console.log(`we have it here`,move);
 
             const cpusq = document.querySelector(`.sq${move}`);
             
             setTimeout(() => {
                 cpusq.click();
             }, 300);
-
 
         }
         else{
