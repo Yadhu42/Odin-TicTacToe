@@ -193,62 +193,68 @@ const cpuAi = (function(){
 
     function strat(me){
         console.log(`entering player function`);
-        let arr = [];
-        console.log(`player pos`,pos);
+        let allCombo = [];
+        let multiCombo = [];
         winCombos.forEach((combo) =>{
             const [a,b,c] = combo;
 
-            if(pos.length>1){
+            if(pos.length>2){
                 if(pos.includes(a) && pos.includes(b)){
-                    if(board[c].getValue()!==me){
-                        console.log(`1`)
-                        cpuTake(c);   
-                    }
-                    else if(board[c].getValue()===me){
-                        const alt = winstrat(combo);
-                        console.log(`1.5`)
-                        cpuTake(alt);
-                        return;
-                    }
-                }
-                else if(pos.includes(b) && pos.includes(c)){
-                    if(board[a].getValue()!==me){
-                        console.log(`2`)
-                        cpuTake(a);
+                    if(board[c].getValue()===0){
+                        console.log(`1`);
+                        multiCombo.push(c); 
                     }
                     else{
                         const alt = winstrat(combo);
+                        console.log(`1.5`);
+                            multiCombo.push(alt);  
+                    }
+                }
+                else if(pos.includes(b) && pos.includes(c)){
+                    if(board[a].getValue()===0){
+                        console.log(`2`)
+                        multiCombo.push(a);                    }
+                    else{
+                        const alt = winstrat(combo);
                         console.log(`2.5`)
-                        cpuTake(alt);
-                        return;
+                            multiCombo.push(alt);              
                     }
                 }
                 else if(pos.includes(a) && pos.includes(c)){
-                    if(board[b].getValue()!==me){
+                    if(board[b].getValue()===0){
                         console.log(`3`)
-                        cpuTake(b);
+                        multiCombo.push(b);                    
                     }
                     else{
                         const alt = winstrat(combo);
                         console.log(`3.5`);
-                        cpuTake(alt);
-                        return;
+                        multiCombo.push(alt);  
                     }
                 }
             }
             else{
                 // console.log(`first combo`,combo);
-                console.log(`4`);
-                combo.forEach((val)=>{
-                    if(!pos.includes(val)){
-                        arr.push(val);
+                    console.log(`4`);
+                    if(combo.includes(pos[0])){
+                        combo.forEach((el) =>{
+                            if(el!==pos[0]){
+                                allCombo.push(el);
+                            }
+                        })
                     }
-                });
-            }
-
+                }
         });
-        if(arr.length!==0){
-            optimalValue(arr);
+        if(multiCombo.length===1){
+            console.log(multiCombo);
+            cpuTake(multiCombo[0]);
+        }
+        if(multiCombo.length>1){
+            console.log(multiCombo);
+            cpuTake(multiCombo[0]);
+        }
+        if(allCombo.length!==0){
+            console.log(allCombo);
+            optimalValue(allCombo);
         }
     }
 
@@ -258,16 +264,15 @@ const cpuAi = (function(){
 
         winCombos.forEach((arr) =>{
             arr.forEach((el) =>{
-                if(board[el].getValue()===0){
+                if(board[el].getValue()===opponent[1].playerMark){
                     if(!filled.includes(arr)){
                         filled.push(arr);
                     }
                 }
-                
             });
         });
 
-        //console.log(filled);
+        
         let winner =  filled.filter((arr) => arr!==combo);
         const rand = Math.floor(Math.random() * winner.length);
         //console.log(winner[rand]);
@@ -281,11 +286,13 @@ const cpuAi = (function(){
             }
         });
 
+        console.log(`stock`,stock);
         const randpos = Math.floor(Math.random() * stock.length);
         return stock[randpos];
     }
 
     function optimalValue(args){
+
         const rand = Math.floor(Math.random() * args.length);
         cpuTake(args[rand]);
     }
