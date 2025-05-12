@@ -1,4 +1,3 @@
-
 const gameBoard = (function () {
     const arrayGrid = [];
     const arrSize = 9;
@@ -123,179 +122,340 @@ const cpuAi = (function(){
     const winCombos = gameBoard.getWinningCombos();
     let board = gameBoard.getBoard();
     let pos = [];
-    let cpuPos = [];
 
 
     function checkCpu(){
+        
+        let emptyPos = [];
+        let playerPos = [];
+        let takenPos = [];
+        let cpuPos = [];
+        let cpuCan = [];
+        let playerCan = [];
+        let cpuAll = [];
+
         board.forEach((square) =>{
-            if(square.getValue()===opponent[1].playerMark){
-                if(!cpuPos.includes(board.indexOf(square))){
+            if(square.getValue() === 0){
+                emptyPos.push(board.indexOf(square));
+            }
+            if(square.getValue() !== 0){
+                takenPos.push(board.indexOf(square));
+
+                if(square.getValue() === opponent[0].playerMark){
+                    playerPos.push(board.indexOf(square));
+                }
+                if(square.getValue() === opponent[1].playerMark){
                     cpuPos.push(board.indexOf(square));
                 }
             }
         });
-        // console.log(cpuPos);
-        cpuStrat();
-    }
 
-    function cpuStrat(){
-        let found = false;
-        if(cpuPos.length>=2){
-            
-            winCombos.forEach((combo) =>{
-                const [a,b,c] = combo;
-                
-                if(cpuPos.includes(a) && cpuPos.includes(b)){
-                    if(board[c].getValue()===0){
-                        console.log(`going to pos`,c,combo);
-                        cpuTake(c);
-                        found = true;
-                    }
-                }
-                else if(cpuPos.includes(b) && cpuPos.includes(c)){
-                    if(board[a].getValue()===0){
-                        console.log(`going to pos`,a,combo);
-                        cpuTake(a);
-                        found = true;
-                    }
-                }
-                else if(cpuPos.includes(a) && cpuPos.includes(c)){
-                    if(board[b].getValue()===0){
-                        console.log(`going to pos`,b,combo);
-                        cpuTake(b);
-                        found = true;
-                    }
-                }
-            });
-            if(found!=true){
-                console.log(`fag`,cpuPos);
-                checkPlayer();
-                found=false;
+
+        if(playerPos.length===0){
+            console.log(`cpu moves first`);
+        }
+
+        if(cpuPos.length===0){
+            if(emptyPos.includes(4)){
+                cpuTake(4);  
+            }
+            else{
+                const rand = Math.floor(Math.random() * emptyPos.length);
+                cpuTake(emptyPos[rand]);
             }
         }
         else{
-            // console.log(`i'm the issue`);
-            checkPlayer();
-        }
-    }
-    
-    function checkPlayer(){
-
-        board.forEach((square) =>{
-            if(square.getValue()===opponent[0].playerMark){
-                if(!pos.includes(board.indexOf(square))){
-                    pos.push(board.indexOf(square));
+            winCombos.forEach((combo) =>{
+                const [a,b,c] = combo;
+                // if(emptyPos.includes(a) && emptyPos.includes(b) && emptyPos.includes(c)){
+                //     console.log(`total remaining empty combos`,combo);
+                // }
+                if(cpuPos.includes(a) || cpuPos.includes(b) || cpuPos.includes(c)){
+                    cpuAll.push(combo);
                 }
-            }
-        });
-        strat(opponent[1].playerMark);
-    }
+                if(takenPos.includes(a) && takenPos.includes(b) && board[c].getValue() === 0){
+                   if(board[a].getValue() === board[b].getValue()){
+                        if(board[a].getValue() === opponent[1].playerMark){
+                            cpuCan.push(c);
 
-    function strat(me){
-        console.log(`entering player function`);
-        let allCombo = [];
-        let multiCombo = [];
-        winCombos.forEach((combo) =>{
-            const [a,b,c] = combo;
+                        }
+                        else{
+                            playerCan.push(c);
+                        }
+                   }
+                }
+                if(takenPos.includes(b) && takenPos.includes(c) && board[a].getValue() === 0){
+                    if(board[b].getValue() === board[c].getValue()){
+                        if(board[b].getValue() === opponent[1].playerMark){
+                            cpuCan.push(a);
+                        }
+                        else{
+                            playerCan.push(a);
+                        }
+                   }
 
-            if(pos.length>2){
-                if(pos.includes(a) && pos.includes(b)){
-                    if(board[c].getValue()===0){
-                        console.log(`1`);
-                        multiCombo.push(c); 
-                    }
-                    else{
-                        const alt = winstrat(combo);
-                        console.log(`1.5`);
-                            multiCombo.push(alt);  
-                    }
                 }
-                else if(pos.includes(b) && pos.includes(c)){
-                    if(board[a].getValue()===0){
-                        console.log(`2`)
-                        multiCombo.push(a);                    }
-                    else{
-                        const alt = winstrat(combo);
-                        console.log(`2.5`)
-                            multiCombo.push(alt);              
-                    }
-                }
-                else if(pos.includes(a) && pos.includes(c)){
-                    if(board[b].getValue()===0){
-                        console.log(`3`)
-                        multiCombo.push(b);                    
-                    }
-                    else{
-                        const alt = winstrat(combo);
-                        console.log(`3.5`);
-                        multiCombo.push(alt);  
-                    }
-                }
-            }
-            else{
-                // console.log(`first combo`,combo);
-                    console.log(`4`);
-                    if(combo.includes(pos[0])){
-                        combo.forEach((el) =>{
-                            if(el!==pos[0]){
-                                allCombo.push(el);
-                            }
-                        })
-                    }
-                }
-        });
-        if(multiCombo.length===1){
-            console.log(multiCombo);
-            cpuTake(multiCombo[0]);
-        }
-        if(multiCombo.length>1){
-            console.log(multiCombo);
-            cpuTake(multiCombo[0]);
-        }
-        if(allCombo.length!==0){
-            console.log(allCombo);
-            optimalValue(allCombo);
-        }
-    }
-
-    function winstrat(combo){
-        let stock = [];
-        let filled = [];
-
-        winCombos.forEach((arr) =>{
-            arr.forEach((el) =>{
-                if(board[el].getValue()===opponent[1].playerMark){
-                    if(!filled.includes(arr)){
-                        filled.push(arr);
-                    }
+                if(takenPos.includes(a) && takenPos.includes(c) && board[b].getValue() === 0){
+                    if(board[a].getValue() === board[c].getValue()){
+                        if(board[a].getValue() === opponent[1].playerMark){
+                            cpuCan.push(b);
+                        }
+                        else{
+                            playerCan.push(b);
+                        }
+                   }
                 }
             });
-        });
+            let opt = optimalPosition(cpuCan, playerCan);
+            cpuTake(opt);
+        }
 
-        
-        let winner =  filled.filter((arr) => arr!==combo);
-        const rand = Math.floor(Math.random() * winner.length);
-        //console.log(winner[rand]);
+        function optimalPosition(cpuArr, playerArr){
+            console.log(cpuArr,playerArr);
+            let finalpos = [];
 
-        winner[rand].forEach((el) =>{
-            if(board[el].getValue()===0){
-                stock.push(el);
+            if(playerArr.length === 0 && cpuArr.length === 0){
+                console.log(cpuAll);
+                console.log(emptyPos);
+
+                cpuAll.forEach((arr) =>{
+                    emptyPos.forEach((el) =>{
+                        if(arr.includes(el)){
+                            if(!finalpos.includes(el)){
+                                finalpos.push(el);
+                            }
+                    }
+                    });
+                });
+               const rand = Math.floor(Math.random() * finalpos.length);
+               return finalpos[rand]; 
+            }
+            else if(cpuArr.length === 0 && playerArr.length!==0){
+                const rand = Math.floor(Math.random() * playerArr.length);
+                return playerArr[rand];
+            }
+            else if(cpuArr.length !== 0 && playerArr.length === 0){
+                return cpuArr[0];
             }
             else{
-                `already taken`;
+                return cpuArr[0];
             }
-        });
-
-        console.log(`stock`,stock);
-        const randpos = Math.floor(Math.random() * stock.length);
-        return stock[randpos];
+        }
     }
 
-    function optimalValue(args){
 
-        const rand = Math.floor(Math.random() * args.length);
-        cpuTake(args[rand]);
-    }
+
+    // function checkCpu(){
+    //     board.forEach((square) =>{
+    //         if(square.getValue()===opponent[1].playerMark){
+    //             if(!cpuPos.includes(board.indexOf(square))){
+    //                 cpuPos.push(board.indexOf(square));
+    //             }
+    //         }
+    //     });
+    //     // console.log(cpuPos);
+    //     cpuStrat();
+    // }
+
+    // function cpuStrat(){
+    //     let found = false;
+    //     if(cpuPos.length>=2){
+            
+    //         winCombos.forEach((combo) =>{
+    //             const [a,b,c] = combo;
+                
+    //             if(cpuPos.includes(a) && cpuPos.includes(b)){
+    //                 if(board[c].getValue()===0){
+    //                     console.log(`going to pos`,c,combo);
+    //                     cpuTake(c);
+    //                     found = true;
+    //                 }
+    //             }
+    //             else if(cpuPos.includes(b) && cpuPos.includes(c)){
+    //                 if(board[a].getValue()===0){
+    //                     console.log(`going to pos`,a,combo);
+    //                     cpuTake(a);
+    //                     found = true;
+    //                 }
+    //             }
+    //             else if(cpuPos.includes(a) && cpuPos.includes(c)){
+    //                 if(board[b].getValue()===0){
+    //                     console.log(`going to pos`,b,combo);
+    //                     cpuTake(b);
+    //                     found = true;
+    //                 }
+    //             }
+    //         });
+    //         if(found!=true){
+    //             console.log(`fag`,cpuPos);
+    //             checkPlayer();
+    //             found=false;
+    //         }
+    //     }
+    //     else{
+    //         // console.log(`i'm the issue`);
+    //         checkPlayer();
+    //     }
+    // }
+    
+    // function checkPlayer(){
+
+    //     board.forEach((square) =>{
+    //         if(square.getValue()===opponent[0].playerMark){
+    //             if(!pos.includes(board.indexOf(square))){
+    //                 pos.push(board.indexOf(square));
+    //             }
+    //         }
+    //     });
+    //     strat(opponent[1].playerMark);
+    // }
+
+    // function strat(me){
+    //     console.log(`entering player function`);
+    //     let allCombo = [];
+    //     let multiCombo = [];
+    //     let found = false;
+
+    //     winCombos.forEach((combo) =>{
+    //         const [a,b,c] = combo;
+
+    //         if(pos.length>1){
+    //             if(pos.includes(a) && pos.includes(b)){
+    //                 if(board[c].getValue()===0){
+    //                     console.log(`1`);
+    //                     multiCombo.push(c); 
+    //                     found = true;
+    //                 }
+    //                 else{
+    //                     console.log(`1.5`);
+    //                     const alt = winstrat(combo);
+    //                     multiCombo.push(alt);  
+    //                     found = true;
+    //                 }
+    //             }
+    //             else if(pos.includes(b) && pos.includes(c)){
+    //                 if(board[a].getValue()===0){
+    //                     console.log(`2`)
+    //                     multiCombo.push(a); 
+    //                     found = true;                   }
+    //                 else{
+    //                     console.log(`2.5`);
+    //                     const alt = winstrat(combo);
+    //                     multiCombo.push(alt);    
+    //                     found = true;          
+    //                 }
+    //             }
+    //             else if(pos.includes(a) && pos.includes(c)){
+    //                 if(board[b].getValue()===0){
+    //                     console.log(`3`)
+    //                     multiCombo.push(b);    
+    //                     found = true;                
+    //                 }
+    //                 else{
+    //                     console.log(`3.5`);
+    //                     const alt = winstrat(combo);
+    //                     multiCombo.push(alt);  
+    //                     found = true;
+    //                 }
+    //             }
+    //         }
+    //         else{
+    //             // console.log(`first combo`,combo);
+    //                 console.log(`4`);
+    //                 found=true;
+    //                 if(combo.includes(pos[0])){
+    //                     combo.forEach((el) =>{
+    //                         if(el!==pos[0]){
+    //                             allCombo.push(el);
+    //                         }
+    //                     });
+    //                 }
+    //             }
+    //     });
+    //     if(found!=true){
+    //         console.log(`random pattern`);
+    //         winCombos.forEach((arr) =>{
+    //             if(arr.includes(pos[pos.length-1])){
+    //                 arr.forEach((el) =>{
+    //                     if(el!==pos[pos.length-1]){
+    //                         allCombo.push(el);
+    //                     }
+    //                 })
+    //             }
+    //         })
+    //     }
+    //     if(multiCombo.length===1){
+    //         console.log(multiCombo);
+    //         cpuTake(multiCombo[0]);
+    //     }
+    //     if(multiCombo.length>1){
+    //         console.log(multiCombo);
+    //         cpuTake(multiCombo[0]);
+    //     }
+    //     if(allCombo.length!==0){
+    //         console.log(allCombo);
+    //         optimalValue(allCombo);
+    //     }
+    // }
+
+    // function winstrat(combo){
+    //     console.log(`entered winstrat with`,combo);
+    //     let stock = [];
+    //     let filled = [];
+    //     let rem = [];
+    //     let mine =[];
+
+    //     winCombos.forEach((arr) =>{
+    //         if(arr!==combo){
+    //             filled.push(arr);
+    //         }
+    //     })
+
+    //     combo.forEach((el) =>{
+    //         if(board[el].getValue() === opponent[1].playerMark){
+    //             mine.push(el);
+    //         }
+    //     });
+
+    //     mine.forEach((pos) =>{
+    //         filled.forEach((arr) =>{
+    //             if(arr.includes(pos)){
+    //                 arr.forEach((el) =>{
+    //                     if(board[el].getValue()===0){
+    //                         rem.push(el);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     });
+        
+    //     console.log(`all opponent locations not filled`,rem);
+
+    //     console.log(`here's all mine`, mine);
+
+    //     // let winner =  filled.filter((arr) => arr===opponent[1].playerMark);
+    //     // console.log(`all my locations`,winner);
+    //     // const rand = Math.floor(Math.random() * winner.length);
+    //     // //console.log(winner[rand]);
+
+    //     winner[rand].forEach((el) =>{
+    //         if(board[el].getValue()===0){
+    //             stock.push(el);
+    //         }
+    //         else{
+    //             `already taken`;
+    //         }
+    //     });
+
+    //     const randpos = Math.floor(Math.random() * stock.length);
+    //     return stock[randpos];
+    // }
+
+    // function optimalValue(args){
+
+    //     const rand = Math.floor(Math.random() * args.length);
+    //     cpuTake(args[rand]);
+    // }
 
     function cpuTake(pos){
         cpuTurn = pos;
@@ -304,7 +464,8 @@ const cpuAi = (function(){
 
     const getCpuTurn = () => cpuTurn;
 
-    return{powerOn,checkPlayer,getCpuTurn,checkCpu}
+    return{powerOn,getCpuTurn,checkCpu}//checkPlayer checkCpu
+
 })();
 
 const displayControl= ( () => {
