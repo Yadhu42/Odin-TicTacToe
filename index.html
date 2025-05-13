@@ -10,8 +10,37 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <header><div class="logo"><p>Tic-Tac-Toe</p></div></header>
-    <div class="container"></div>
+    <header><div class="logo"><p>Tic Tac Toe</p></div></header>
+    <div class="content">
+        <div class="box inst">
+            <p class="rules">Tic-tac-toe is a two-player game played on a 3x3 grid.</p>
+            <p class="rules">Players take turns marking spaces with their symbol (X or O) and the first to get three in a row (horizontally, vertically, or diagonally) wins. </p>
+            <p class="rules">If all spaces are filled and no player has three in a row, the game ends in a draw</p>
+            
+            <div class="playSelect">
+                <div class="playTitle">
+                    <p>Mode Select </p>
+                    <p class="smallTxt">(click icon to change)</p>
+                </div>
+
+                <div class="selectItems">
+                    <div class="userIcon">
+                        <svg class="" width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M13 20V18C13 15.2386 10.7614 13 8 13C5.23858 13 3 15.2386 3 18V20H13ZM13 20H21V19C21 16.0545 18.7614 14 16 14C14.5867 14 13.3103 14.6255 12.4009 15.6311M11 7C11 8.65685 9.65685 10 8 10C6.34315 10 5 8.65685 5 7C5 5.34315 6.34315 4 8 4C9.65685 4 11 5.34315 11 7ZM18 9C18 10.1046 17.1046 11 16 11C14.8954 11 14 10.1046 14 9C14 7.89543 14.8954 7 16 7C17.1046 7 18 7.89543 18 9Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    </div>
+                    <label for="userIcon" class="userLabel">2P</label>
+                </div>
+            </div>
+
+            <div class="playBtn">
+                <button id="play">Play</button>
+                <button id="reset">Reset</button>
+            </div>
+
+            <div class="winText"></div>
+        </div>
+        <div class="container"></div>
+
+    </div>
     <script src="/script.js"></script>
 </body>
 </html>

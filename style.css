@@ -8,12 +8,11 @@
 header{
     width: 100%;
     background-color: #27548A;
-    height: 55px;
-    margin-bottom: 15px;
+    height: 95px;
 }
 
 .logo{
-    padding: 0 10px;
+    padding: 0 20px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -21,9 +20,9 @@ header{
 }
 
 header p{
-    font-size: 30px;
+    font-size: 45px;
     margin: 0;
-    padding: 0;
+    text-decoration: line-through;
 }
 
 body{
@@ -33,19 +32,85 @@ body{
     background-color: #EEEEEE;
 }
 
-.container{
-    padding: 10px;
+.content{
     display: grid;
-    grid-template-columns: 200px 200px 200px;
+    grid-template-columns: 1fr 4fr;
+    justify-content: center;
+    padding: 15px;
+}
+
+.box{
+    width: 450px;
+}
+
+.inst{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 15px;
+    font-size: 24px;
+}
+
+.inst p{
+    margin: 0;
+}
+
+.rules{
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.playSelect{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.playTitle{
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.smallTxt{
+    font-size: 15px;
+}
+
+.selectItems{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+.userIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.playBtn{
+    margin-bottom: 50px;
+}
+
+.winText{
+    width: 150px;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: 250px 250px 250px;
     justify-content: center;
     align-items: center;
 }
 
-.victory{
-    font-size: 24px;
-}
-
 .victory p{
+    font-size: 24px;
     margin: 0;
 }
 
@@ -61,7 +126,6 @@ body{
 
 .gridSquare:hover{
     background-color: #d0d0d0;
-    
 }
 
 .sq0,.sq3,.sq6{
@@ -78,13 +142,6 @@ body{
 
 .sq6,.sq7,.sq8{
     border-bottom: #EEEEEE;
-}
-
-.victory{
-    margin-top: 15px;
-    width: 600px;
-    display: flex;
-    justify-content: center;
 }
 
 .ticMark{

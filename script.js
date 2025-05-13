@@ -1,5 +1,5 @@
 const gameBoard = (function () {
-    const arrayGrid = [];
+    let arrayGrid = [];
     const arrSize = 9;
 
     for(let i = 0; i< arrSize; i++){
@@ -24,6 +24,11 @@ const gameBoard = (function () {
         }
     }
 
+    function clearBoard(){
+        arrayGrid=[];
+        console.log(`yeah`);
+    }
+
     const printBoard = () => {
         const displayArray = arrayGrid.map((square) => square.getValue());
         return displayArray;
@@ -45,7 +50,7 @@ const gameBoard = (function () {
 
     const getWinningCombos = () => winningCombos;
 
-    return {getBoard,makeMark,printBoard,getWinningCombos};
+    return {getBoard,makeMark,printBoard,getWinningCombos,clearBoard};
 })();
 
 const gameControl = (function (){
@@ -117,12 +122,10 @@ const cpuAi = (function(){
         gameControl.playerCreate(`CPU`);
     }
 
-
     const opponent = gameControl.getplayers();
     const winCombos = gameBoard.getWinningCombos();
     let board = gameBoard.getBoard();
     let pos = [];
-
 
     function checkCpu(){
         
@@ -157,7 +160,14 @@ const cpuAi = (function(){
 
         if(cpuPos.length===0){
             if(emptyPos.includes(4)){
-                cpuTake(4);  
+                const rand = Math.random();
+                if(rand > 0.5){
+                    cpuTake(4);  
+                }
+                else{
+                const other = Math.floor(Math.random() * emptyPos.length);
+                cpuTake(emptyPos[other]);
+                }
             }
             else{
                 const rand = Math.floor(Math.random() * emptyPos.length);
@@ -167,9 +177,6 @@ const cpuAi = (function(){
         else{
             winCombos.forEach((combo) =>{
                 const [a,b,c] = combo;
-                // if(emptyPos.includes(a) && emptyPos.includes(b) && emptyPos.includes(c)){
-                //     console.log(`total remaining empty combos`,combo);
-                // }
                 if(cpuPos.includes(a) || cpuPos.includes(b) || cpuPos.includes(c)){
                     cpuAll.push(combo);
                 }
@@ -177,7 +184,6 @@ const cpuAi = (function(){
                    if(board[a].getValue() === board[b].getValue()){
                         if(board[a].getValue() === opponent[1].playerMark){
                             cpuCan.push(c);
-
                         }
                         else{
                             playerCan.push(c);
@@ -193,7 +199,6 @@ const cpuAi = (function(){
                             playerCan.push(a);
                         }
                    }
-
                 }
                 if(takenPos.includes(a) && takenPos.includes(c) && board[b].getValue() === 0){
                     if(board[a].getValue() === board[c].getValue()){
@@ -215,16 +220,13 @@ const cpuAi = (function(){
             let finalpos = [];
 
             if(playerArr.length === 0 && cpuArr.length === 0){
-                console.log(cpuAll);
-                console.log(emptyPos);
-
                 cpuAll.forEach((arr) =>{
                     emptyPos.forEach((el) =>{
                         if(arr.includes(el)){
                             if(!finalpos.includes(el)){
                                 finalpos.push(el);
                             }
-                    }
+                        }
                     });
                 });
                const rand = Math.floor(Math.random() * finalpos.length);
@@ -243,220 +245,6 @@ const cpuAi = (function(){
         }
     }
 
-
-
-    // function checkCpu(){
-    //     board.forEach((square) =>{
-    //         if(square.getValue()===opponent[1].playerMark){
-    //             if(!cpuPos.includes(board.indexOf(square))){
-    //                 cpuPos.push(board.indexOf(square));
-    //             }
-    //         }
-    //     });
-    //     // console.log(cpuPos);
-    //     cpuStrat();
-    // }
-
-    // function cpuStrat(){
-    //     let found = false;
-    //     if(cpuPos.length>=2){
-            
-    //         winCombos.forEach((combo) =>{
-    //             const [a,b,c] = combo;
-                
-    //             if(cpuPos.includes(a) && cpuPos.includes(b)){
-    //                 if(board[c].getValue()===0){
-    //                     console.log(`going to pos`,c,combo);
-    //                     cpuTake(c);
-    //                     found = true;
-    //                 }
-    //             }
-    //             else if(cpuPos.includes(b) && cpuPos.includes(c)){
-    //                 if(board[a].getValue()===0){
-    //                     console.log(`going to pos`,a,combo);
-    //                     cpuTake(a);
-    //                     found = true;
-    //                 }
-    //             }
-    //             else if(cpuPos.includes(a) && cpuPos.includes(c)){
-    //                 if(board[b].getValue()===0){
-    //                     console.log(`going to pos`,b,combo);
-    //                     cpuTake(b);
-    //                     found = true;
-    //                 }
-    //             }
-    //         });
-    //         if(found!=true){
-    //             console.log(`fag`,cpuPos);
-    //             checkPlayer();
-    //             found=false;
-    //         }
-    //     }
-    //     else{
-    //         // console.log(`i'm the issue`);
-    //         checkPlayer();
-    //     }
-    // }
-    
-    // function checkPlayer(){
-
-    //     board.forEach((square) =>{
-    //         if(square.getValue()===opponent[0].playerMark){
-    //             if(!pos.includes(board.indexOf(square))){
-    //                 pos.push(board.indexOf(square));
-    //             }
-    //         }
-    //     });
-    //     strat(opponent[1].playerMark);
-    // }
-
-    // function strat(me){
-    //     console.log(`entering player function`);
-    //     let allCombo = [];
-    //     let multiCombo = [];
-    //     let found = false;
-
-    //     winCombos.forEach((combo) =>{
-    //         const [a,b,c] = combo;
-
-    //         if(pos.length>1){
-    //             if(pos.includes(a) && pos.includes(b)){
-    //                 if(board[c].getValue()===0){
-    //                     console.log(`1`);
-    //                     multiCombo.push(c); 
-    //                     found = true;
-    //                 }
-    //                 else{
-    //                     console.log(`1.5`);
-    //                     const alt = winstrat(combo);
-    //                     multiCombo.push(alt);  
-    //                     found = true;
-    //                 }
-    //             }
-    //             else if(pos.includes(b) && pos.includes(c)){
-    //                 if(board[a].getValue()===0){
-    //                     console.log(`2`)
-    //                     multiCombo.push(a); 
-    //                     found = true;                   }
-    //                 else{
-    //                     console.log(`2.5`);
-    //                     const alt = winstrat(combo);
-    //                     multiCombo.push(alt);    
-    //                     found = true;          
-    //                 }
-    //             }
-    //             else if(pos.includes(a) && pos.includes(c)){
-    //                 if(board[b].getValue()===0){
-    //                     console.log(`3`)
-    //                     multiCombo.push(b);    
-    //                     found = true;                
-    //                 }
-    //                 else{
-    //                     console.log(`3.5`);
-    //                     const alt = winstrat(combo);
-    //                     multiCombo.push(alt);  
-    //                     found = true;
-    //                 }
-    //             }
-    //         }
-    //         else{
-    //             // console.log(`first combo`,combo);
-    //                 console.log(`4`);
-    //                 found=true;
-    //                 if(combo.includes(pos[0])){
-    //                     combo.forEach((el) =>{
-    //                         if(el!==pos[0]){
-    //                             allCombo.push(el);
-    //                         }
-    //                     });
-    //                 }
-    //             }
-    //     });
-    //     if(found!=true){
-    //         console.log(`random pattern`);
-    //         winCombos.forEach((arr) =>{
-    //             if(arr.includes(pos[pos.length-1])){
-    //                 arr.forEach((el) =>{
-    //                     if(el!==pos[pos.length-1]){
-    //                         allCombo.push(el);
-    //                     }
-    //                 })
-    //             }
-    //         })
-    //     }
-    //     if(multiCombo.length===1){
-    //         console.log(multiCombo);
-    //         cpuTake(multiCombo[0]);
-    //     }
-    //     if(multiCombo.length>1){
-    //         console.log(multiCombo);
-    //         cpuTake(multiCombo[0]);
-    //     }
-    //     if(allCombo.length!==0){
-    //         console.log(allCombo);
-    //         optimalValue(allCombo);
-    //     }
-    // }
-
-    // function winstrat(combo){
-    //     console.log(`entered winstrat with`,combo);
-    //     let stock = [];
-    //     let filled = [];
-    //     let rem = [];
-    //     let mine =[];
-
-    //     winCombos.forEach((arr) =>{
-    //         if(arr!==combo){
-    //             filled.push(arr);
-    //         }
-    //     })
-
-    //     combo.forEach((el) =>{
-    //         if(board[el].getValue() === opponent[1].playerMark){
-    //             mine.push(el);
-    //         }
-    //     });
-
-    //     mine.forEach((pos) =>{
-    //         filled.forEach((arr) =>{
-    //             if(arr.includes(pos)){
-    //                 arr.forEach((el) =>{
-    //                     if(board[el].getValue()===0){
-    //                         rem.push(el);
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     });
-        
-    //     console.log(`all opponent locations not filled`,rem);
-
-    //     console.log(`here's all mine`, mine);
-
-    //     // let winner =  filled.filter((arr) => arr===opponent[1].playerMark);
-    //     // console.log(`all my locations`,winner);
-    //     // const rand = Math.floor(Math.random() * winner.length);
-    //     // //console.log(winner[rand]);
-
-    //     winner[rand].forEach((el) =>{
-    //         if(board[el].getValue()===0){
-    //             stock.push(el);
-    //         }
-    //         else{
-    //             `already taken`;
-    //         }
-    //     });
-
-    //     const randpos = Math.floor(Math.random() * stock.length);
-    //     return stock[randpos];
-    // }
-
-    // function optimalValue(args){
-
-    //     const rand = Math.floor(Math.random() * args.length);
-    //     cpuTake(args[rand]);
-    // }
-
     function cpuTake(pos){
         cpuTurn = pos;
         console.log(`The cpu wishes to move to`, cpuTurn);
@@ -464,23 +252,41 @@ const cpuAi = (function(){
 
     const getCpuTurn = () => cpuTurn;
 
-    return{powerOn,getCpuTurn,checkCpu}//checkPlayer checkCpu
+    return{powerOn,getCpuTurn,checkCpu}
 
 })();
 
-const displayControl= ( () => {
+const playBtn = document.querySelector(`#play`);
+const resetBtn = document.querySelector(`#reset`);
+const cont = document.querySelector(`.container`);
 
+playBtn.addEventListener(`click`,() =>{
+    gameControl.playerCreate(`Player 1`);
+    gameControl.playerCreate(`CPU`);
+    displayControl.displayGrid();
+});
+
+resetBtn.addEventListener(`click`,() =>{
+    displayControl.clear();
+});
+
+const displayControl= (() => {
+    playBtn.setAttribute(`disabled`,`true`);      
     const container = document.querySelector(`.container`);
+    const instBox = document.querySelector(`.inst`);
     const textContainer = document.createElement(`div`);
     textContainer.setAttribute(`class`,`victory`);
 
     const winMsg = document.createElement(`p`);    
     textContainer.appendChild(winMsg);
 
-    const gridSize = gameBoard.getBoard();
+
     const firstPlayer = gameControl.getplayers();
 
-    function displayGrid(){
+    
+
+    function displayGrid(){  
+        const gridSize = gameBoard.getBoard();
 
         gridSize.forEach((square) => {
             const sq = document.createElement(`div`);
@@ -494,7 +300,7 @@ const displayControl= ( () => {
             });
 
             winMsg.innerText = `${firstPlayer[0].playerName}'s Turn`;
-            container.appendChild(textContainer);
+            instBox.appendChild(textContainer);
         });
 
     }
@@ -519,6 +325,11 @@ const displayControl= ( () => {
             return;
         }
 
+    }
+
+    function clear(){
+        container.innerHTML="";
+        displayGrid()
     }
  
  
@@ -601,13 +412,8 @@ const displayControl= ( () => {
         }
     }
 
-    return {displayGrid,winState}
+    return {displayGrid,winState,clear}
 })();
 
-gameControl.playerCreate(`Player 1`);
-cpuAi.powerOn();
 
 
-console.log(gameControl.getplayers());
-
-displayControl.displayGrid();
