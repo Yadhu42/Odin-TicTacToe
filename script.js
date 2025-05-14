@@ -1,9 +1,12 @@
+
 const gameBoard = (function () {
     let arrayGrid = [];
     const arrSize = 9;
 
-    for(let i = 0; i< arrSize; i++){
+    function createBoard(){
+        for(let i = 0; i< arrSize; i++){
         arrayGrid.push(cell());
+        }
     }
 
     const getBoard = () => arrayGrid;
@@ -26,6 +29,7 @@ const gameBoard = (function () {
 
     function clearBoard(){
         arrayGrid=[];
+        createBoard();
         console.log(`yeah`);
     }
 
@@ -50,7 +54,7 @@ const gameBoard = (function () {
 
     const getWinningCombos = () => winningCombos;
 
-    return {getBoard,makeMark,printBoard,getWinningCombos,clearBoard};
+    return {getBoard,makeMark,createBoard,printBoard,getWinningCombos,clearBoard};
 })();
 
 const gameControl = (function (){
@@ -259,10 +263,32 @@ const cpuAi = (function(){
 const playBtn = document.querySelector(`#play`);
 const resetBtn = document.querySelector(`#reset`);
 const cont = document.querySelector(`.container`);
+const icon = document.querySelector(`.userIcon`);
+const iconTxt = document.querySelector(`.userLabel`);
+
+icon.addEventListener(`click`, () =>{
+    if(iconTxt.innerText === `PvP`){
+        iconTxt.innerText = `CPU`
+    }
+    else if(iconTxt.innerText ===`CPU`){
+        iconTxt.innerText = `PvP`;
+    }
+
+});
 
 playBtn.addEventListener(`click`,() =>{
-    gameControl.playerCreate(`Player 1`);
-    gameControl.playerCreate(`CPU`);
+
+
+
+    if(iconTxt.innerText === `PvP`){
+        gameControl.playerCreate(`Player 1`);
+        gameControl.playerCreate(`Player 2`);
+    }
+    else if(iconTxt.innerText === `CPU`){
+        gameControl.playerCreate(`Player`);
+        gameControl.playerCreate(`CPU`);
+    }
+
     displayControl.displayGrid();
 });
 
@@ -271,9 +297,10 @@ resetBtn.addEventListener(`click`,() =>{
 });
 
 const displayControl= (() => {
-    playBtn.setAttribute(`disabled`,`true`);      
+
+    gameBoard.createBoard();
     const container = document.querySelector(`.container`);
-    const instBox = document.querySelector(`.inst`);
+    const instBox = document.querySelector(`.winText`);
     const textContainer = document.createElement(`div`);
     textContainer.setAttribute(`class`,`victory`);
 
@@ -283,9 +310,9 @@ const displayControl= (() => {
 
     const firstPlayer = gameControl.getplayers();
 
-    
-
-    function displayGrid(){  
+    function displayGrid(){
+        
+        playBtn.setAttribute(`disabled`,`true`);        
         const gridSize = gameBoard.getBoard();
 
         gridSize.forEach((square) => {
@@ -329,7 +356,8 @@ const displayControl= (() => {
 
     function clear(){
         container.innerHTML="";
-        displayGrid()
+        gameBoard.clearBoard();
+        displayGrid();
     }
  
  

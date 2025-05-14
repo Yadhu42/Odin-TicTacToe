@@ -30,11 +30,13 @@ body{
     padding: 0;
     height: 100vh;
     background-color: #EEEEEE;
+    background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
 }
 
 .content{
     display: grid;
     grid-template-columns: 1fr 4fr;
+    grid-template-rows: 612px;
     justify-content: center;
     padding: 15px;
 }
@@ -48,9 +50,10 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
+    background-color: #DDA853;
     padding: 15px;
     font-size: 24px;
+    border-radius: 15px;
 }
 
 .inst p{
@@ -58,8 +61,8 @@ body{
 }
 
 .rules{
-    padding-bottom: 10px;
-    text-align: center;
+    padding:0 10px 15px 10px;
+    text-align: left;
 }
 
 .playSelect{
@@ -78,13 +81,13 @@ body{
 
 .smallTxt{
     font-size: 15px;
+    text-align: center;
 }
 
 .selectItems{
     display: flex;
     justify-content: center;
     align-items: center;
-   
 }
 
 .userIcon{
@@ -95,11 +98,39 @@ body{
 }
 
 .playBtn{
-    margin-bottom: 50px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.playBtn button{
+    padding: 10px;
+    width: 150px;
+    font-family: "Cal Sans", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    background-color: #27548A;
+    border: 3px white solid;
+    border-radius: 10px;
+    color: white;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: ease 0.1s;
+}
+
+.playBtn button:hover{
+    background-color: white;
+    color: #27548A;
+    border-color: #27548A;
+}
+
+.playBtn button:active{
+    background-color: #e2e2e2;
 }
 
 .winText{
     width: 150px;
+    height: 32px;
 }
 
 .container{
@@ -118,7 +149,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
+    height: 201px;
     border: solid 3px black;
     transition: ease .3s;
     cursor: pointer;
