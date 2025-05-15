@@ -153,6 +153,7 @@ body{
     border: solid 3px black;
     transition: ease .3s;
     cursor: pointer;
+    transition: ease 0.3s;
 }
 
 .gridSquare:hover{

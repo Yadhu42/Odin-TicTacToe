@@ -30,7 +30,6 @@ const gameBoard = (function () {
     function clearBoard(){
         arrayGrid=[];
         createBoard();
-        console.log(`yeah`);
     }
 
     const printBoard = () => {
@@ -46,7 +45,6 @@ const gameBoard = (function () {
         const addMark = (player) =>{
             value = player
         }
-
         return {getValue, addMark}
     }
 
@@ -54,7 +52,7 @@ const gameBoard = (function () {
 
     const getWinningCombos = () => winningCombos;
 
-    return {getBoard,makeMark,createBoard,printBoard,getWinningCombos,clearBoard};
+    return {getBoard,makeMark,createBoard,printBoard,getWinningCombos};
 })();
 
 const gameControl = (function (){
@@ -62,11 +60,20 @@ const gameControl = (function (){
     let activePlayer = {};
 
     const playerCreate = (name) => {
+        if(players.length===2){
+            players.pop();
+            players.pop();
+        }
         const playerName = name;
         const playerMark = players.length===0 ?`X`:`O`;
         players.push({playerName,playerMark});
         
         activePlayer = players[0];
+    }
+
+    const clearPlayer = () =>{
+        players.pop();
+        players.pop();
     }
 
     const switchPlayer = () =>{
@@ -117,7 +124,7 @@ const gameControl = (function (){
         }
     }
 
-    return {playerCreate,getplayers,getCurrentPlayer,makeMove,score};
+    return {playerCreate,getplayers,getCurrentPlayer,makeMove,score,clearPlayer};
 })();
 
 const cpuAi = (function(){
@@ -132,7 +139,7 @@ const cpuAi = (function(){
     let pos = [];
 
     function checkCpu(){
-        
+
         let emptyPos = [];
         let playerPos = [];
         let takenPos = [];
@@ -266,34 +273,37 @@ const cont = document.querySelector(`.container`);
 const icon = document.querySelector(`.userIcon`);
 const iconTxt = document.querySelector(`.userLabel`);
 
-icon.addEventListener(`click`, () =>{
+function playerSelect(){
+
     if(iconTxt.innerText === `PvP`){
-        iconTxt.innerText = `CPU`
+        iconTxt.innerText = `CPU`;
+        gameControl.playerCreate(`Player`);
+        gameControl.playerCreate(`CPU`);
+        icon.innerHTML = `<svg id="comp" fill="#000000" height="64px" width="64px" version="1.1" id="XMLID_167_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M24,23H0v-7h2V1h20v15h2V23z M2,21h20v-3H2V21L2,21z M4,16h16V3H4V16z M18,14H6V5h12V14z M8,12h8V7H8V12z"></path> </g> </g></svg>`
     }
     else if(iconTxt.innerText ===`CPU`){
         iconTxt.innerText = `PvP`;
+        gameControl.playerCreate(`Player 1`);
+        gameControl.playerCreate(`Player 2`);
+        icon.innerHTML = `<svg id="guy" class="" width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M13 20V18C13 15.2386 10.7614 13 8 13C5.23858 13 3 15.2386 3 18V20H13ZM13 20H21V19C21 16.0545 18.7614 14 16 14C14.5867 14 13.3103 14.6255 12.4009 15.6311M11 7C11 8.65685 9.65685 10 8 10C6.34315 10 5 8.65685 5 7C5 5.34315 6.34315 4 8 4C9.65685 4 11 5.34315 11 7ZM18 9C18 10.1046 17.1046 11 16 11C14.8954 11 14 10.1046 14 9C14 7.89543 14.8954 7 16 7C17.1046 7 18 7.89543 18 9Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`
     }
+    console.log(gameControl.getplayers());
+}
 
-});
+icon.addEventListener(`click`, playerSelect);
 
-playBtn.addEventListener(`click`,() =>{
-
-
-
-    if(iconTxt.innerText === `PvP`){
+function startGame(){
+    if(gameControl.getplayers().length===0){
         gameControl.playerCreate(`Player 1`);
         gameControl.playerCreate(`Player 2`);
     }
-    else if(iconTxt.innerText === `CPU`){
-        gameControl.playerCreate(`Player`);
-        gameControl.playerCreate(`CPU`);
-    }
-
     displayControl.displayGrid();
-});
+}
+
+playBtn.addEventListener(`click`,startGame);
 
 resetBtn.addEventListener(`click`,() =>{
-    displayControl.clear();
+    location.reload();
 });
 
 const displayControl= (() => {
@@ -310,11 +320,10 @@ const displayControl= (() => {
 
     const firstPlayer = gameControl.getplayers();
 
-    function displayGrid(){
-        
-        playBtn.setAttribute(`disabled`,`true`);        
+    function displayGrid(){    
         const gridSize = gameBoard.getBoard();
 
+        playBtn.removeEventListener(`click`,startGame);
         gridSize.forEach((square) => {
             const sq = document.createElement(`div`);
             sq.setAttribute(`id`,`${gridSize.indexOf(square)}`);
@@ -331,7 +340,6 @@ const displayControl= (() => {
         });
 
     }
-
     
     function cpuClick(){
         const active = gameControl.getCurrentPlayer();
@@ -353,13 +361,6 @@ const displayControl= (() => {
         }
 
     }
-
-    function clear(){
-        container.innerHTML="";
-        gameBoard.clearBoard();
-        displayGrid();
-    }
- 
  
     function winState(event){
 
@@ -440,7 +441,7 @@ const displayControl= (() => {
         }
     }
 
-    return {displayGrid,winState,clear}
+    return {displayGrid,winState}
 })();
 
 
