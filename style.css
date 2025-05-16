@@ -17,6 +17,7 @@ header{
     display: flex;
     align-items: center;
     color: #EEEEEE;
+    gap: 10px;
 }
 
 header p{
@@ -129,6 +130,9 @@ body{
 }
 
 .winText{
+    display: flex;
+    justify-self: center;
+    justify-content: center;
     width: 150px;
     height: 32px;
 }
@@ -141,6 +145,7 @@ body{
 }
 
 .victory p{
+    text-align: center;
     font-size: 24px;
     margin: 0;
 }

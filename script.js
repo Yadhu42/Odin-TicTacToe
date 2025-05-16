@@ -90,37 +90,41 @@ const gameControl = (function (){
 
     function score(){
         const currentBoard = gameBoard.printBoard();
+        const winCombos = gameBoard.getWinningCombos();
+        let found = false;
+        let win=[];
+        let msg = '';
 
-        if(currentBoard[0]===activePlayer.playerMark && currentBoard[1]===activePlayer.playerMark && currentBoard[2]===activePlayer.playerMark){
-            return ([0,1,2]);
+        winCombos.forEach((arr) =>{
+            const [a,b,c] = arr;
+            if(currentBoard[a]===activePlayer.playerMark && currentBoard[b]===activePlayer.playerMark && currentBoard[c]===activePlayer.playerMark){
+                win.push(arr);
+                found = true;
+            }
+        });
+        if(found!==true){
+            let fullCheck=false;
+
+            currentBoard.forEach((el) =>{
+                if(el===0){
+                    fullCheck=true;
+                }
+            })
+            if(fullCheck===true){
+                switchPlayer();
+                msg = `${activePlayer.playerName}'s Turn`;
+            }
+            else{
+                msg = `Tie`;
+            }
+
         }
-        else if(currentBoard[3]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[5]===activePlayer.playerMark){
-            return ([3,4,5]);
+        if(win.length!==0 && msg===``){
+            console.log(win);
+            return win[0];
         }
-        else if(currentBoard[6]===activePlayer.playerMark && currentBoard[7]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
-            return ([6,7,8]);
-        }
-        else if(currentBoard[0]===activePlayer.playerMark && currentBoard[3]===activePlayer.playerMark && currentBoard[6]===activePlayer.playerMark){
-            return ([0,3,6]);
-        }
-        else if(currentBoard[1]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[7]===activePlayer.playerMark){
-            return ([1,4,7]);
-        }
-        else if(currentBoard[2]===activePlayer.playerMark && currentBoard[5]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
-            return ([2,5,8]);
-        }
-        else if(currentBoard[0]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[8]===activePlayer.playerMark){
-            return ([0,4,8]);
-        }
-        else if(currentBoard[2]===activePlayer.playerMark && currentBoard[4]===activePlayer.playerMark && currentBoard[6]===activePlayer.playerMark){
-            return ([2,4,6]);
-        }
-        else if(!currentBoard.includes(0)){
-            return(`Tie`);
-        }
-        else{
-            switchPlayer();
-            return((`${activePlayer.playerName}'s Turn`));
+        else if(win.length===0 && msg!==``){
+            return msg;
         }
     }
 
@@ -294,8 +298,8 @@ icon.addEventListener(`click`, playerSelect);
 
 function startGame(){
     if(gameControl.getplayers().length===0){
-        gameControl.playerCreate(`Player 1`);
-        gameControl.playerCreate(`Player 2`);
+        gameControl.playerCreate(`Player`);
+        gameControl.playerCreate(`CPU`);
     }
     displayControl.displayGrid();
 }
@@ -322,7 +326,7 @@ const displayControl= (() => {
 
     function displayGrid(){    
         const gridSize = gameBoard.getBoard();
-
+        icon.removeEventListener(`click`,playerSelect);
         playBtn.removeEventListener(`click`,startGame);
         gridSize.forEach((square) => {
             const sq = document.createElement(`div`);
@@ -385,7 +389,7 @@ const displayControl= (() => {
 
             const state = gameControl.score();
             cpuClick();
-
+            console.log(state);
             if(typeof(state)===`string`){
                 if(state===`Tie`){
                     let square = document.querySelectorAll(`.gridSquare`);
@@ -412,16 +416,16 @@ const displayControl= (() => {
             }
             else{
                 const winner = gameControl.getCurrentPlayer();
-                winMsg.innerText = `${winner.playerName} wins the game!`
+                winMsg.innerText = `${winner.playerName} wins!`
 
                 if(winner.playerMark===`X`){
                     state.forEach((id) =>{
-                    let square = document.querySelector(`.sq${id}`)
-                    square.innerHTML = `<svg style="filter: drop-shadow(3px 5px 2px rgb(0,0,0,0.4));" class="tics" id="${event.target.id}" width="150px" height="150px" viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
-                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-419.000000, -240.000000)" class="ticMarkW"> <g id="icons" transform="translate(56.000000, 160.000000)"> 
-                                            <polygon  id="${event.target.id}" points="375.0183 90 384 98.554 382.48065 100 373.5 91.446 364.5183 100 363 98.554 371.98065 90 363 81.446 364.5183 80 373.5 88.554 382.48065 80 384 81.446"> 
-                                            </polygon> </g> </g> </g> </g>
-                                        </svg>` 
+                        let square = document.querySelector(`.sq${id}`)
+                        square.innerHTML = `<svg style="filter: drop-shadow(3px 5px 2px rgb(0,0,0,0.4));" class="tics" id="${event.target.id}" width="150px" height="150px" viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-419.000000, -240.000000)" class="ticMarkW"> <g id="icons" transform="translate(56.000000, 160.000000)"> 
+                                                <polygon  id="${event.target.id}" points="375.0183 90 384 98.554 382.48065 100 373.5 91.446 364.5183 100 363 98.554 371.98065 90 363 81.446 364.5183 80 373.5 88.554 382.48065 80 384 81.446"> 
+                                                </polygon> </g> </g> </g> </g>
+                                            </svg>` 
                     });
                 }
                 else if(winner.playerMark===`O`){
